@@ -56,8 +56,8 @@ Then run `esri-leaflet-bundler esri-leaflet-custom-build.js -o esri-leaflet-cust
 Then replace the references to `esri-leaflet` and `esri-leaflet` geocoder in your in `main.js` with references to your custom build:
 
 ```js
-import { featureLayer, basemapLayer } from './esri-leaflet-custom';
-import { geosearch, arcgisOnlineProvider, featureLayerProvider } from './esri-leaflet-custom';
+var esri = require('./esri-leaflet-custom');
+var geocoding = require('./esri-leaflet-custom');
 ```
 
 ## Contributing
