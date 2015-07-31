@@ -1,10 +1,6 @@
 // require leaflet
 var L = require('leaflet');
-
-// require esri-leaflet
 var esri = require('esri-leaflet');
-
-// require esri-leaflet-geocoder
 var geocoding = require('esri-leaflet-geocoder');
 
 // since leaflet is bundled into the browserify package it won't be able to detect where the images
