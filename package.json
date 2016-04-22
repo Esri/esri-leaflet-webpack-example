@@ -1,21 +1,28 @@
 {
   "name": "esri-leaflet-webpack-example",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --progress --colors",
+    "build": "webpack"
   },
-  "author": "",
+  "author": "Patrick Arlt",
   "license": "Apache-2.0",
   "dependencies": {
-    "esri-leaflet": "^2.0.0-beta.5",
-    "esri-leaflet-geocoder": "^2.0.0-beta.3",
-    "leaflet": "^1.0.0-beta.1"
+    "esri-leaflet": "^2.0.4",
+    "esri-leaflet-geocoder": "2.1.4",
+    "leaflet": "^1.0.0"
   },
   "devDependencies": {
-    "babel-core": "^5.8.3",
-    "babel-loader": "^5.3.2",
-    "webpack": "^1.10.4"
+    "babel-core": "^6.17.0",
+    "babel-loader": "^6.2.5",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Esri/esri-leaflet-webpack-example.git"
   }
 }

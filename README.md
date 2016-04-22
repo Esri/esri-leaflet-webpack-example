@@ -2,14 +2,11 @@
 
 Example of using [Esri Leaflet](http://esri.github.io/esri-leaflet) with [WebPack](http://webpack.github.io/)!
 
-1. Install JSPM `npm install -g webpack`
-2. Install a local web server `npm install -g http-server`
-2. [Fork and clone this repo](https://help.github.com/articles/fork-a-repo)
-3. `cd` into `esri-leaflet-webpack-example`
-4. Install dependencies with `npm install`
-5. Build the project with `webpack`
-6. Start the web server `http-server .`
-7. Open [http://localhost:8080](http://localhost:8080) in your browser.
+1. [Fork and clone this repo](https://help.github.com/articles/fork-a-repo)
+2. `cd` into `esri-leaflet-webpack-example`
+3. Install dependencies with `npm install`
+4. start the live development server with `npm start`
+5. Open http://localhost:8080/webpack-dev-server/ in your browser.
 
 ## Smaller Builds Using the Esri Leaflet Bundler
 
@@ -49,7 +46,7 @@ export default {
 };
 ```
 
-Note that since will will compile this to ES 6 modules we can export not just the `default` export but exports for each individual module.
+Note that since will will compile this to ES6 modules we can export not just the `default` export but exports for each individual module.
 
 Then run `esri-leaflet-bundler esri-leaflet-custom-build.js -o esri-leaflet-custom.js --sourcemap inline --format cjs` to generate your custom build.
 
