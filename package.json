@@ -11,8 +11,8 @@
   "author": "Patrick Arlt",
   "license": "Apache-2.0",
   "dependencies": {
-    "esri-leaflet": "^2.0.4",
-    "esri-leaflet-geocoder": "2.1.4",
+    "esri-leaflet": "^2.0.0",
+    "esri-leaflet-geocoder": "^2.0.0",
     "leaflet": "^1.0.0"
   },
   "devDependencies": {
