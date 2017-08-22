@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Esri
+ * Copyright 2017 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ var L = require('leaflet');
 var esri = require('esri-leaflet');
 var geocoding = require('esri-leaflet-geocoder');
 
-// since leaflet is bundled into the browserify package it won't be able to detect where the images
+// since leaflet is bundled it won't be able to detect where the images are automatically
 // solution is to point it to where you host the the leaflet images yourself
-L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.0.1/dist/images/';
+L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.2.0/dist/images/';
 
 // create map
 var map = L.map('map').setView([51.505, -0.09], 13);
