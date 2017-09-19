@@ -60,7 +60,7 @@ function buildMap(){
 	var searchControl = L.esri.geocoding.geosearch().addTo(map);
 
 	var elevationService = L.esri.GP.service({
-	    url: "http://elevation.arcgis.com/arcgis/rest/services/Tools/Elevation/GPServer/SummarizeElevation",
+	    url: "https://elevation.arcgis.com/arcgis/rest/services/Tools/Elevation/GPServer/SummarizeElevation",
 		// userCors: false,
 		async: true,
 		path: 'submitJob'
