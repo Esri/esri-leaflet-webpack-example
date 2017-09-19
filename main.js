@@ -22,7 +22,7 @@ L.esri = E;
 import LG from 'esri-leaflet-geocoder';
 import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css'
 L.esri.geocoding = LG;
-import GP from 'esri-leaflet-gp';
+import GP from 'esri-leaflet-gp/dist/esri-leaflet-gp-debug.js';
 L.esri.GP = GP;
 
 // since leaflet is bundled it won't be able to detect where the images are automatically
@@ -41,8 +41,7 @@ L.esri.basemapLayer('ImageryLabels').addTo(map);
 var searchControl = L.esri.geocoding.geosearch().addTo(map);
 
 var elevationService = L.esri.GP.service({
-    url: "https://utility.arcgis.com/usrsvcs/appservices/IzrhNerVgFEnNkg5/rest/services/Tools/Elevation/GPServer/SummarizeElevation/",
-	// userCors: false,
+    url: "http://utility.arcgis.com/usrsvcs/appservices/tGgqVVoHpHacidEV/rest/services/Tools/Elevation/GPServer/SummarizeElevation",
 	async: true,
 	path: 'submitJob'
 });
@@ -170,14 +169,18 @@ var addToList = function(marker){
 }
 
 var getElevation = function(marker, id){
-	// console.log('layer', marker, 'id', id);
+	// console.log('layer', marker.toGeoJSON(), 'id', id);
 	var elevationTask = elevationService.createTask();
 	elevationTask.setParam('DEMResolution', 'FINEST');
 	elevationTask.setParam('InputFeatures', marker.toGeoJSON());
 	elevationTask.setParam('IncludeSlopeAspect', false);
 	elevationTask.setOutputParam('OutputSummary');
 	// elevationTask.token(token)
-	elevationTask.run(function(error, response, raw){
+	elevationTask.run(elevationTaskCallback);
+
+	function elevationTaskCallback(error, response){
+		if (error) throw error;
+		console.log('final response', response);
 		// Gonna need an if statement in here to handle multiple features
 		if (response.OutputSummary.features.length > 1){
 			// Gots multiples
@@ -185,7 +188,7 @@ var getElevation = function(marker, id){
 			markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #elevation')[0].innerHTML = response.OutputSummary.features[0].properties.MeanElevation;
 			marker.elevation = response.OutputSummary.features[0].properties.MeanElevation;
 		}
-	})
+	}
 }
 
 map.on('click', function(e){

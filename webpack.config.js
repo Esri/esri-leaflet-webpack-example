@@ -10,9 +10,9 @@ module.exports = {
 	},
 	devServer: {
 		publicPath: 'http://localhost:8080',
-		// contentBase: path.join(__dirname, "dist"),
+		contentBase: path.join(__dirname, "dist"),
 		// compress: true,
-		// port: 9000
+		port: 9000
 	},
 	module: {
 		rules: [
@@ -32,6 +32,8 @@ module.exports = {
 			}
 		]
 	},
+	// Generate source maps
+    devtool: 'source-map',
 	plugins: [
 		new webpack.HotModuleReplacementPlugin(),
 		// Write CSS to a styles.css file
