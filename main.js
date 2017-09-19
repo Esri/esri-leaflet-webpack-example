@@ -41,7 +41,7 @@ L.esri.basemapLayer('ImageryLabels').addTo(map);
 var searchControl = L.esri.geocoding.geosearch().addTo(map);
 
 var elevationService = L.esri.GP.service({
-    url: "http://utility.arcgis.com/usrsvcs/appservices/tGgqVVoHpHacidEV/rest/services/Tools/Elevation/GPServer/SummarizeElevation",
+    url: "https://utility.arcgis.com/usrsvcs/appservices/tGgqVVoHpHacidEV/rest/services/Tools/Elevation/GPServer/SummarizeElevation",
 	async: true,
 	path: 'submitJob'
 });
