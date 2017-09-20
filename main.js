@@ -179,14 +179,17 @@ var getElevation = function(marker, id){
 	elevationTask.run(elevationTaskCallback);
 
 	function elevationTaskCallback(error, response){
-		if (error) throw error;
-		console.log('final response', response);
-		// Gonna need an if statement in here to handle multiple features
-		if (response.OutputSummary.features.length > 1){
-			// Gots multiples
+		if (error) {
+			getElevation(marker, id);
 		} else {
-			markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #elevation')[0].innerHTML = response.OutputSummary.features[0].properties.MeanElevation;
-			marker.elevation = response.OutputSummary.features[0].properties.MeanElevation;
+			console.log('final response', response);
+			// Gonna need an if statement in here to handle multiple features
+			if (response.OutputSummary.features.length > 1){
+				// Gots multiples
+			} else {
+				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #elevation')[0].innerHTML = response.OutputSummary.features[0].properties.MeanElevation;
+				marker.elevation = response.OutputSummary.features[0].properties.MeanElevation;
+			}
 		}
 	}
 }
