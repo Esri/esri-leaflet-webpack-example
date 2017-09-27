@@ -13,13 +13,22 @@
       margin: 0;
     }
 	.info {
-	    padding: 6px 8px;
+	    padding: 5px 8px;
 	    font: 14px/16px Arial, Helvetica, sans-serif;
 	    background: white;
 	    background: rgba(255,255,255,0.8);
 	    box-shadow: 0 0 15px rgba(0,0,0,0.2);
 	    border-radius: 5px;
+		/*width: 500px;*/
+		max-height: 500px;
+		overflow: auto;
 	}
+
+	.info h2 {
+		margin-top: 6px;
+		margin-bottom: 4px
+	}
+
 	.info h4 {
 	    margin: 0 0 5px;
 	    color: #777;
@@ -28,14 +37,15 @@
 	.info table {
 		border-collapse: collapse;
 		border-spacing: 0px;
-		max-height: 400px;
-		overflow-y: auto;
+		margin-bottom: 10px;
 	}
 
 	.info table, .info th, .info td {
     	padding: 5px;
     	border: 1px solid black;
+
 	}
+
   </style>
   <body>
     <div id="map"></div>
