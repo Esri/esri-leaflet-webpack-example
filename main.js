@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.​
  */
-
+//
 // require leaflet
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -25,13 +25,17 @@ L.esri.geocoding = LG;
 import GP from 'esri-leaflet-gp';
 L.esri.GP = GP;
 import toGeoJSON from '@mapbox/togeojson';
+import 'leaflet.locatecontrol';
+// L.control.locate = locationPlugin;
+import 'font-awesome/css/font-awesome.css';
+import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css';
 
 // since leaflet is bundled it won't be able to detect where the images are automatically
 // solution is to point it to where you host the the leaflet images yourself
 L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.2.0/dist/images/';
 
 // create map
-var map = L.map('map').setView([44.05, -121.3], 11);
+var map = L.map('map').setView([39, -98], 5);
 
 // add basemap
 L.esri.basemapLayer('Imagery', {}).addTo(map);
@@ -39,6 +43,7 @@ L.esri.basemapLayer('Imagery', {}).addTo(map);
 // optional labels layer
 L.esri.basemapLayer('ImageryTransportation').addTo(map);
 L.esri.basemapLayer('ImageryLabels').addTo(map);
+var locationControl = L.control.locate({drawMarker: false}).addTo(map);
 var searchControl = L.esri.geocoding.geosearch().addTo(map);
 
 var elevationService = L.esri.GP.service({
@@ -92,6 +97,10 @@ markerList.onAdd = function(map){
 	column6.innerHTML = 'Elevation (ft)';
 	var column7 = document.createElement('th');
 	column7.innerHTML = 'X';
+	column7.setAttribute('id', 'delete');
+	var column8 = document.createElement('th');
+	column8.innerHTML = 'DEM Resolution';
+	column8.className = 'hidden';
 	this._tableBody = document.createElement('tbody');
 	tableHeaderRow.appendChild(column1);
 	tableHeaderRow.appendChild(column2);
@@ -100,6 +109,7 @@ markerList.onAdd = function(map){
 	tableHeaderRow.appendChild(column5);
 	tableHeaderRow.appendChild(column6);
 	tableHeaderRow.appendChild(column7);
+	tableHeaderRow.appendChild(column8);
 	tableHeader.appendChild(tableHeaderRow);
 	table.appendChild(tableHeader);
 	table.appendChild(this._tableBody);
@@ -121,6 +131,10 @@ markerList.onAdd = function(map){
 	this._div.appendChild(table);
 	this._div.appendChild(clearButton);
 	this._div.appendChild(exportButton);
+	var footerInfo = document.createElement('p');
+	footerInfo.className = 'footerInfo';
+	footerInfo.innerHTML = "<small>Horizontal coordinates (X,Y) reported in WGS 1984, decimal degrees. Elevation data obtained from DEMs via <a href='https://developers.arcgis.com/rest/elevation/api-reference/summarize-elevation.htm'>ESRI's Summarize Elevation</a> service. DEM resolution reported in CSV.</small>"
+	this._div.appendChild(footerInfo);
 	var importButton = document.createElement('input');
 	importButton.type = 'file';
 	importButton.id = 'fileUpload';
@@ -176,6 +190,10 @@ markerList.update = function(){
 		L.DomEvent.on(deleteButton, 'click', function(ev){
 			deleteMarker(this.id);
 		});
+		var column8 = document.createElement('td');
+		column8.className = 'hidden';
+		column8.setAttribute('id', 'res');
+		column8.innerHTML = markers[i].DEMResolution ? markers[i].DEMResolution : '';
 		newRow.appendChild(column1);
 		newRow.appendChild(column2);
 		newRow.appendChild(column3);
@@ -183,6 +201,7 @@ markerList.update = function(){
 		newRow.appendChild(column5);
 		newRow.appendChild(column6);
 		newRow.appendChild(column7);
+		newRow.appendChild(column8);
 		this._tableBody.appendChild(newRow);
 	}
 	// Add a marker to the table
@@ -239,14 +258,16 @@ function exportAsCsv(rows){
 	for(var i=0;i < rows.length;i++) {
 	    var cells = rows[i].querySelectorAll('td,th');
 	    var csv_row = [];
-	    for (var j=0;j<cells.length - 1 ;j++) { // - 1 to ignore delete cell
+	    for (var j=0;j<cells.length ;j++) { // - 1 to ignore delete cell
 	        var txt;
-			if ((cells[j].nodeName == 'TD') && (cells[j].getAttribute('id') == 'name')) {
-				txt = cells[j].querySelectorAll('input')[0].value;
-			} else {
-				txt = cells[j].innerText
+			if (cells[j].getAttribute('id') !== 'delete'){
+				if ((cells[j].nodeName == 'TD') && (cells[j].getAttribute('id') == 'name')) {
+					txt = cells[j].querySelectorAll('input')[0].value;
+				} else {
+					txt = cells[j].innerText
+				}
+				csv_row.push(txt.replace(",", "-"));
 			}
-	        csv_row.push(txt.replace(",", "-"));
 	    }
 	    csv.push(csv_row.join(","));
 	}
@@ -317,6 +338,8 @@ var getElevation = function(marker, id){
 			} else {
 				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #elevation')[0].innerHTML = response.OutputSummary.features[0].properties.MeanElevation;
 				marker.elevation = response.OutputSummary.features[0].properties.MeanElevation;
+				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #res')[0].innerHTML = response.OutputSummary.features[0].properties.DEMResolution;
+				marker.DEMResolution = response.OutputSummary.features[0].properties.DEMResolution;
 				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #elevation_ft')[0].innerHTML = (response.OutputSummary.features[0].properties.MeanElevation * 3.28084).toFixed(4);
 				marker.elevation_ft = (response.OutputSummary.features[0].properties.MeanElevation * 3.28084).toFixed(4);
 			}
