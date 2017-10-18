@@ -47,9 +47,9 @@ var locationControl = L.control.locate({drawMarker: false}).addTo(map);
 var searchControl = L.esri.geocoding.geosearch().addTo(map);
 
 var elevationService = L.esri.GP.service({
-    url: "http://elevation.arcgis.com/arcgis/rest/services/Tools/Elevation/GPServer/SummarizeElevation/",
+    url: "https://elevation.arcgis.com/arcgis/rest/services/Tools/Elevation/GPServer/SummarizeElevation/",
 	// proxy: "http://localhost:8888/PHP/proxy.php",
-	proxy: "http://devgis.geoengineers.com/xyz_proxy/proxy.ashx",
+	proxy: "https://devgis.geoengineers.com/xyz_proxy/proxy.ashx",
 	useCors: true,
 	async: true,
 	asyncInterval: 1.5,
