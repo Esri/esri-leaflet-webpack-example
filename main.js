@@ -47,9 +47,12 @@ var locationControl = L.control.locate({drawMarker: false}).addTo(map);
 var searchControl = L.esri.geocoding.geosearch().addTo(map);
 
 var elevationService = L.esri.GP.service({
+	// Deployed settings
     url: "https://elevation.arcgis.com/arcgis/rest/services/Tools/Elevation/GPServer/SummarizeElevation/",
-	// proxy: "http://localhost:8888/PHP/proxy.php",
 	proxy: "https://devgis.geoengineers.com/xyz_proxy/proxy.ashx",
+	// Local dev settings
+    // url: "http://elevation.arcgis.com/arcgis/rest/services/Tools/Elevation/GPServer/SummarizeElevation/",
+	// proxy: "http://localhost:8888/PHP/proxy.php",
 	useCors: true,
 	async: true,
 	asyncInterval: 1.5,
@@ -168,13 +171,14 @@ markerList.update = function(){
 		column2input.setAttribute('type', 'text');
 		column2input.setAttribute('id', markerGroup.getLayerId(markers[i]));
 		L.DomEvent.on(column2input, 'keyup', function(ev){
+			this.value = this.value.replace(/,/g, '');
 			updateName(this.id, this.value)
 		}, false);
 		column2.appendChild(column2input);
 		var column3 = document.createElement('td');
-		column3.innerHTML = markers[i].toGeoJSON().geometry.coordinates[0];
+		column3.innerHTML = markers[i].toGeoJSON().geometry.coordinates[0].toFixed(4);
 		var column4 = document.createElement('td');
-		column4.innerHTML = markers[i].toGeoJSON().geometry.coordinates[1];
+		column4.innerHTML = markers[i].toGeoJSON().geometry.coordinates[1].toFixed(4);
 		var column5 = document.createElement('td');
 		column5.setAttribute('id', 'elevation');
 		column5.innerHTML = markers[i].elevation ? markers[i].elevation : 'Fetching...';
@@ -295,7 +299,7 @@ function processImport(result){
 		// console.log("feature", feature)
 		var latlng = L.latLng(feature.geometry.coordinates[1],feature.geometry.coordinates[0])
 		var marker = L.marker(latlng, {draggable: true});
-		marker.name = feature.properties.name;
+		marker.name = feature.properties.name.replace(/,/g, '');
 		// console.log('marker', marker)
 		marker.on('dragend', function(e){
 			var thisId = markerGroup.getLayerId(marker);
@@ -336,12 +340,12 @@ var getElevation = function(marker, id){
 			if (response.OutputSummary.features.length > 1){
 				// Gots multiples
 			} else {
-				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #elevation')[0].innerHTML = response.OutputSummary.features[0].properties.MeanElevation;
-				marker.elevation = response.OutputSummary.features[0].properties.MeanElevation;
+				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #elevation')[0].innerHTML = response.OutputSummary.features[0].properties.MeanElevation.toFixed(0);
+				marker.elevation = response.OutputSummary.features[0].properties.MeanElevation.toFixed(0);
 				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #res')[0].innerHTML = response.OutputSummary.features[0].properties.DEMResolution;
 				marker.DEMResolution = response.OutputSummary.features[0].properties.DEMResolution;
-				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #elevation_ft')[0].innerHTML = (response.OutputSummary.features[0].properties.MeanElevation * 3.28084).toFixed(4);
-				marker.elevation_ft = (response.OutputSummary.features[0].properties.MeanElevation * 3.28084).toFixed(4);
+				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #elevation_ft')[0].innerHTML = (response.OutputSummary.features[0].properties.MeanElevation * 3.28084).toFixed(0);
+				marker.elevation_ft = (response.OutputSummary.features[0].properties.MeanElevation * 3.28084).toFixed(0);
 			}
 		}
 	}
