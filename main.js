@@ -78,6 +78,7 @@ markerList.onAdd = function(map){
 	L.DomEvent.disableScrollPropagation(this._div);
 	var title = document.createElement('h2');
 	title.innerHTML = 'XYZ Export Tool';
+	// title.appendChild(feedback);
 	var header = document.createElement('h4');
 	var headInstructions = document.createElement('span');
 	headInstructions.innerHTML = 'Click to add points or import KML: ';
@@ -136,8 +137,13 @@ markerList.onAdd = function(map){
 	this._div.appendChild(exportButton);
 	var footerInfo = document.createElement('p');
 	footerInfo.className = 'footerInfo';
-	footerInfo.innerHTML = "<small>Horizontal coordinates (X,Y) reported in WGS 1984, decimal degrees. Elevation data obtained from DEMs via <a href='https://developers.arcgis.com/rest/elevation/api-reference/summarize-elevation.htm'>ESRI's Summarize Elevation</a> service. DEM resolution reported in CSV.</small>"
+	footerInfo.innerHTML = "<small>Horizontal coordinates (X,Y) reported in WGS 1984, decimal degrees. Elevation data obtained from DEMs via <a href='https://developers.arcgis.com/rest/elevation/api-reference/summarize-elevation.htm'>ESRI's Summarize Elevation</a> service. DEM resolution reported in CSV.</small>";
 	this._div.appendChild(footerInfo);
+
+	var feedback = document.createElement('span');
+	feedback.className = 'feedbackInfo';
+	feedback.innerHTML = "<small><strong>Feedback and support:</strong> <a href='mailto:softwareengineeringsupport@geoengineers.com'>softwareengineeringsupport@geoengineers.com</a><small>";
+	this._div.appendChild(feedback);
 	var importButton = document.createElement('input');
 	importButton.type = 'file';
 	importButton.id = 'fileUpload';
