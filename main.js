@@ -105,6 +105,15 @@ markerList.onAdd = function(map){
 	var column8 = document.createElement('th');
 	column8.innerHTML = 'DEM Resolution';
 	column8.className = 'hidden';
+	var column9 = document.createElement('th');
+	column9.innerHTML = 'Product';
+	column9.className = 'hidden';
+	var column10 = document.createElement('th');
+	column10.innerHTML = 'Source';
+	column10.className = 'hidden';
+	var column11 = document.createElement('th');
+	column11.innerHTML = 'Source URL';
+	column11.className = 'hidden';
 	this._tableBody = document.createElement('tbody');
 	tableHeaderRow.appendChild(column1);
 	tableHeaderRow.appendChild(column2);
@@ -114,6 +123,9 @@ markerList.onAdd = function(map){
 	tableHeaderRow.appendChild(column6);
 	tableHeaderRow.appendChild(column7);
 	tableHeaderRow.appendChild(column8);
+	tableHeaderRow.appendChild(column9);
+	tableHeaderRow.appendChild(column10);
+	tableHeaderRow.appendChild(column11);
 	tableHeader.appendChild(tableHeaderRow);
 	table.appendChild(tableHeader);
 	table.appendChild(this._tableBody);
@@ -204,6 +216,18 @@ markerList.update = function(){
 		column8.className = 'hidden';
 		column8.setAttribute('id', 'res');
 		column8.innerHTML = markers[i].DEMResolution ? markers[i].DEMResolution : '';
+		var column9 = document.createElement('td');
+		column9.className = 'hidden';
+		column9.setAttribute('id', 'product');
+		column9.innerHTML = markers[i].product ? markers[i].product : '';
+		var column10 = document.createElement('td');
+		column10.className = 'hidden';
+		column10.setAttribute('id', 'source');
+		column10.innerHTML = markers[i].source ? markers[i].source : '';
+		var column11 = document.createElement('td');
+		column11.className = 'hidden';
+		column11.setAttribute('id', 'source_url');
+		column11.innerHTML = markers[i].source_url ? markers[i].source_url : '';
 		newRow.appendChild(column1);
 		newRow.appendChild(column2);
 		newRow.appendChild(column3);
@@ -212,6 +236,9 @@ markerList.update = function(){
 		newRow.appendChild(column6);
 		newRow.appendChild(column7);
 		newRow.appendChild(column8);
+		newRow.appendChild(column9);
+		newRow.appendChild(column10);
+		newRow.appendChild(column11);
 		this._tableBody.appendChild(newRow);
 	}
 	// Add a marker to the table
@@ -350,6 +377,12 @@ var getElevation = function(marker, id){
 				marker.elevation = response.OutputSummary.features[0].properties.MeanElevation.toFixed(0);
 				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #res')[0].innerHTML = response.OutputSummary.features[0].properties.DEMResolution;
 				marker.DEMResolution = response.OutputSummary.features[0].properties.DEMResolution;
+				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #product')[0].innerHTML = response.OutputSummary.features[0].properties.ProductName;
+				marker.product = response.OutputSummary.features[0].properties.ProductName;
+				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #source')[0].innerHTML = response.OutputSummary.features[0].properties.Source;
+				marker.source = response.OutputSummary.features[0].properties.Source;
+				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #source_url')[0].innerHTML = response.OutputSummary.features[0].properties.Source_URL;
+				marker.source_url = response.OutputSummary.features[0].properties.Source_URL;
 				markerList._tableBody.querySelectorAll('tr#' + 'marker_' + id + ' #elevation_ft')[0].innerHTML = (response.OutputSummary.features[0].properties.MeanElevation * 3.28084).toFixed(0);
 				marker.elevation_ft = (response.OutputSummary.features[0].properties.MeanElevation * 3.28084).toFixed(0);
 			}
