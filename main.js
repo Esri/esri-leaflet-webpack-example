@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Esri
+ * Copyright 2018 Esri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,32 @@
  * limitations under the License.​
  */
 
-// require leaflet
-var L = require('leaflet');
-var esri = require('esri-leaflet');
-var geocoding = require('esri-leaflet-geocoder');
+import { map } from 'leaflet';
 
-// since leaflet is bundled it won't be able to detect where the images are automatically
-// solution is to point it to where you host the the leaflet images yourself
-L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.2.0/dist/images/';
+import { basemapLayer, featureLayer } from 'esri-leaflet';
+
+import {
+  geosearch,
+  arcgisOnlineProvider,
+  featureLayerProvider
+} from 'esri-leaflet-geocoder';
 
 // create map
-var map = L.map('map').setView([51.505, -0.09], 13);
+const ourMap = map('map').setView([51.505, -0.09], 11);
 
 // add basemap
-esri.basemapLayer('Topographic').addTo(map);
+basemapLayer('Ocean').addTo(ourMap);
 
-// add layer
-esri.featureLayer({
+// // add layer
+featureLayer({
   url: 'https://services.arcgis.com/uCXeTVveQzP4IIcx/arcgis/rest/services/gisday/FeatureServer/0/'
-}).addTo(map);
+}).addTo(ourMap);
 
 // add search control
-geocoding.geosearch({
+geosearch({
   providers: [
-    geocoding.arcgisOnlineProvider(),
-    geocoding.featureLayerProvider({
+    arcgisOnlineProvider(),
+    featureLayerProvider({
       url: 'https://services.arcgis.com/uCXeTVveQzP4IIcx/arcgis/rest/services/gisday/FeatureServer/0/',
       searchFields: ['Name', 'Organization'],
       label: 'GIS Day Events',
@@ -48,4 +49,4 @@ geocoding.geosearch({
       }
     })
   ]
-}).addTo(map);
+}).addTo(ourMap);
