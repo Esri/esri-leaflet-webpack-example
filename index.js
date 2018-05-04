@@ -64,25 +64,37 @@ require([
 				  }
 			  }
 			});
-			console.log('layer', layer)
 
 			map.add(layer);
 
 			view.on('click', function(event){
+				// console.log('map.ground', map.ground.queryElevation(event.mapPoint))
+				map.ground.queryElevation(event.mapPoint, {
+					returnSampleInfo: true,
+					demResolution: 'finest-contiguous'
+				})
+					.then(function(result){
+						// console.log('result.geometry', result.geometry)
+						// console.log('result.sampleInfo', result.sampleInfo)
+						let point = {
+							geometry: new Point({
+								x: event.mapPoint.longitude,
+								y: event.mapPoint.latitude,
+								z: result.geometry.z
+							}),
+							attributes: {
+								ObjectID: graphics.length + 1,
+								type: "thing " + (graphics.length + 1),
+								name: "test " + (graphics.length + 1)
+							}
+						};
+						layer.source.add(point)
+						console.log('point', point);
+					});
+				// console.log('mapPoint', event.mapPoint)
 				// console.log("latitude", event.mapPoint.latitude);
 				// console.log("longitude", event.mapPoint.longitude);
-				let point = {
-					geometry: new Point({
-						x: event.mapPoint.longitude,
-						y: event.mapPoint.latitude,
-					}),
-					attributes: {
-						ObjectID: graphics.length + 1,
-						type: "thing " + (graphics.length + 1),
-						name: "test " + (graphics.length + 1)
-					}
-				};
-				layer.source.add(point)
+
 				// graphics.push()
 				// layer.source
 				// console.log('graphics', graphics)
