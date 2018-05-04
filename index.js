@@ -2,11 +2,12 @@ require([
 		"esri/Map",
 		"esri/views/MapView",
 		"esri/layers/FeatureLayer",
+		"esri/geometry/Point",
 		// "esri/renderers/SimpleRenderer"
 		// "esri/geometry/Extent",
 		// "esri/geometry/SpatialReference",
 		"dojo/domReady!"
-  	], function(Map, MapView, FeatureLayer) {
+  	], function(Map, MapView, FeatureLayer, Point) {
 
       var map = new Map({
         basemap: "streets",
@@ -19,24 +20,11 @@ require([
         // extent: ext
         center: [-100, 40],
 		zoom: 4,
-		// spatialReference: {wkid: 4152}
+		// spatialReference: {wkid: 4326}
       });
 
 	  	view.when(() => {
-			let graphics = [
-				{
-				  	geometry: {
-						type: "point",
-						x: 12599540,
-						y: 4998025,
-					},
-				  	attribute: {
-						ObjectID: 1,
-						type: "thing",
-						name: "test"
-					}
-				}
-			];
+			let graphics = [];
 
 			const layer = new FeatureLayer({
 			  fields: [
@@ -62,7 +50,7 @@ require([
 			  spatialReference: {
 				  wkid: 4326
 			  },
-			  url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/WorldCities/FeatureServer/0",
+			  // url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/WorldCities/FeatureServer/0",
 			  renderer: {
 				  type: 'simple',
 				  symbol: {
@@ -76,26 +64,29 @@ require([
 				  }
 			  }
 			});
+			console.log('layer', layer)
 
 			map.add(layer);
 
 			view.on('click', function(event){
-				console.log("event", event.mapPoint.toJSON());
-				graphics.push({
-					geometry: {
-						type: "point",
-						x: event.mapPoint.toJSON().x,
-						y: event.mapPoint.toJSON().y,
-					},
-					attribute: {
-						ObjectID: 1,
-						type: "thing",
-						name: "test"
+				// console.log("latitude", event.mapPoint.latitude);
+				// console.log("longitude", event.mapPoint.longitude);
+				let point = {
+					geometry: new Point({
+						x: event.mapPoint.longitude,
+						y: event.mapPoint.latitude,
+					}),
+					attributes: {
+						ObjectID: graphics.length + 1,
+						type: "thing " + (graphics.length + 1),
+						name: "test " + (graphics.length + 1)
 					}
-				})
-				// layer.load(graphics)
-				// console.log('layer', layer)
+				};
+				layer.source.add(point)
+				// graphics.push()
+				// layer.source
 				// console.log('graphics', graphics)
+				// console.log('layer.source', layer.source.add(point))
 			})
 		});
 });
