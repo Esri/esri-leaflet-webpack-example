@@ -62,7 +62,7 @@ require([
 			  spatialReference: {
 				  wkid: 4326
 			  },
-			  // url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/WorldCities/FeatureServer/0",
+			  url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/WorldCities/FeatureServer/0",
 			  renderer: {
 				  type: 'simple',
 				  symbol: {
