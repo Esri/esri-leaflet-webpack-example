@@ -5,6 +5,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-serve",
     "build": "webpack"
   },
   "author": "Patrick Arlt",
@@ -15,7 +16,8 @@
   },
   "devDependencies": {
     "webpack": "^4.0.1",
-    "webpack-cli": "^2.0.9"
+    "webpack-cli": "^2.0.9",
+    "webpack-serve": "^0.3.2"
   },
   "repository": {
     "type": "git",
