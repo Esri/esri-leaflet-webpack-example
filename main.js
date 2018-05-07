@@ -28,7 +28,7 @@ import {
 const ourMap = map('map').setView([51.505, -0.09], 11);
 
 // add basemap
-basemapLayer('Ocean').addTo(ourMap);
+basemapLayer('Oceans').addTo(ourMap);
 
 // // add layer
 featureLayer({
