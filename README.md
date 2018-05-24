@@ -1,13 +1,10 @@
-# XYZ-export tool 2.0
+# Demo App
 
-This app is built using the ESRI Javascript API v4.x.
+> TypeScript with the [ArcGIS API 4 for JavaScript](https://developers.arcgis.com/javascript/)
 
-All code contained in `index.js`. To run the app, use a simple web host, for example, `http-server`. (Note: This requires node to be installed.)
+## Usage
 
-```
-npm install http-server -g
-cd xyz-export-tool
-http-server
-```
-
-The app should now be available at `localhost:8080`.
+1. Clone the repo and `npm install` dependencies
+2. `npm run dev` to compile `/app/main.ts` to `main.js` in the same folder and watch for changes
+3. launch `index.html` in your browser of choice.
+4. `npm run lint` to run [TSLint](https://github.com/palantir/tslint) on TypeScript files.
