@@ -1,0 +1,64 @@
+repository:
+# Labels: define labels for Issues and Pull Requests
+labels:
+  - name: Bluesky
+    color: C5FFFF
+  - name: duplicate
+    color: CCCCCC
+  - name: enhancement
+    color: 84b6eb
+  - name: "Help wanted"
+    color: 33AA3F
+  - name: Feature
+    oldname: feature
+    color: 336699
+  - name: "High Priority"
+    color: b60205
+  - name: "Medium Priority"
+    color: FBCA04
+  - name: "Low Priority"
+    color: bfd4f2
+  - name: "No Priority"
+    color: aa0bc6
+  - name: "Ready"
+    color: 0052CC
+  - name: "question"
+    color: cc317c
+  - name: "wontfix"
+    color: FFFFFF
+  - name: "Sprint 11 2018-05-21"
+    color: 9809f7
+  - name: "Sprint 12 2018-06-04"
+    color: 9809f7
+  - name: "Sprint 13 2018-06-18"
+    color: 9809f7
+  - name: "Sprint 14 2018-07-02"
+    color: 9809f7
+  - name: "Sprint 15 2018-07-16"
+    color: 9809f7
+  - name: "Sprint 16 2018-07-30"
+    color: 9809f7
+  - name: "Sprint 17 2018-08-13"
+    color: 9809f7
+  - name: "Sprint 18 2018-08-27"
+    color: 9809f7
+  - name: "Sprint 19 2018-09-10"
+    color: 9809f7
+  - name: "Sprint 20 2018-09-24"
+    color: 9809f7
+  - name: "Sprint 21 2018-10-08"
+    color: 9809f7
+  - name: "Sprint 22 2018-10-22"
+    color: 9809f7
+  - name: "Sprint 23 2018-11-05"
+    color: 9809f7
+  - name: "Sprint 24 2018-11-19"
+    color: 9809f7
+  - name: "Sprint 25 2018-12-03"
+    color: 9809f7
+  - name: "Sprint 26 2018-12-17"
+    color: 9809f7
+  - name: "Sprint 27 2018-12-31"
+    color: 9809f7
+  - name: "Sprint 99 Backlog"
+    color: 9809f7
