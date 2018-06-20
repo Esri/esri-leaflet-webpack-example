@@ -4,6 +4,8 @@ import Basemap = require("esri/Basemap");
 import Point = require("esri/geometry/Point");
 import FeatureLayer = require("esri/layers/FeatureLayer");
 import ScaleBar = require("esri/widgets/ScaleBar");
+import XYZ = require("app/xyzWidget.js");
+import Collection = require("esri/core/Collection"):
 
 const map = new EsriMap({
   basemap: "streets" as any as Basemap,
@@ -19,6 +21,7 @@ const view = new MapView({
 
 view.when(() => {
 	let graphics = [];
+	// let graphics = new Collection();
 
 	const layer = new FeatureLayer({
 	  fields: [
@@ -27,11 +30,11 @@ view.when(() => {
 			  alias: "ObjectID",
 			  type: "oid"
 		  },
-		  {
-			  name: "type",
-			  alias: "Type",
-			  type: "string"
-		  },
+		  // {
+			//   name: "type",
+			//   alias: "Type",
+			//   type: "string"
+		  // },
 		  {
 			  name: "Name",
 			  alias: "Name",
@@ -66,7 +69,7 @@ view.when(() => {
 		map.ground.queryElevation(event.mapPoint, {
 			returnSampleInfo: true,
 			demResolution: 'finest-contiguous'
-		})
+			})
 			.then(function(result){
 				// console.log('result.geometry', result.geometry)
 				// console.log('result.sampleInfo', result.sampleInfo)
@@ -77,29 +80,31 @@ view.when(() => {
 						z: result.geometry.z
 					}),
 					attributes: {
-						ObjectID: graphics.length + 1,
-						type: "thing " + (graphics.length + 1),
-						name: "test " + (graphics.length + 1)
+						ObjectID: layer.source.length + 1,
+						type: "thing " + (layer.source.length + 1),
+						name: "test " + (layer.source.length + 1)
 					}
 				};
 				layer.source.add(point)
-				console.log('point', point);
+				// console.log('point', point);
 			});
-		// console.log('mapPoint', event.mapPoint)
-		// console.log("latitude", event.mapPoint.latitude);
-		// console.log("longitude", event.mapPoint.longitude);
 
-		// graphics.push()
-		// layer.source
-		// console.log('graphics', graphics)
-		// console.log('layer.source', layer.source.add(point))
 	})
 
-	var scaleBar = new ScaleBar({
+	const scaleBar = new ScaleBar({
 		view: view,
 		unit: 'dual'
 	});
+
 	view.ui.add(scaleBar, {
 		position: "bottom-left"
 	})
+
+	var widget = new XYZ({
+		view: view,
+		layer: layer
+	});
+
+
+	view.ui.add(widget, "bottom-right")
 });

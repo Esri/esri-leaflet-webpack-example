@@ -1,4 +1,4 @@
-define(["require", "exports", "esri/Map", "esri/views/MapView", "esri/geometry/Point", "esri/layers/FeatureLayer", "esri/widgets/ScaleBar"], function (require, exports, EsriMap, MapView, Point, FeatureLayer, ScaleBar) {
+define(["require", "exports", "esri/Map", "esri/views/MapView", "esri/geometry/Point", "esri/layers/FeatureLayer", "esri/widgets/ScaleBar", "app/xyzWidget.js"], function (require, exports, EsriMap, MapView, Point, FeatureLayer, ScaleBar, XYZ) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var map = new EsriMap({
@@ -13,6 +13,7 @@ define(["require", "exports", "esri/Map", "esri/views/MapView", "esri/geometry/P
     });
     view.when(function () {
         var graphics = [];
+        // let graphics = new Collection();
         var layer = new FeatureLayer({
             fields: [
                 {
@@ -20,11 +21,11 @@ define(["require", "exports", "esri/Map", "esri/views/MapView", "esri/geometry/P
                     alias: "ObjectID",
                     type: "oid"
                 },
-                {
-                    name: "type",
-                    alias: "Type",
-                    type: "string"
-                },
+                // {
+                //   name: "type",
+                //   alias: "Type",
+                //   type: "string"
+                // },
                 {
                     name: "Name",
                     alias: "Name",
@@ -68,21 +69,14 @@ define(["require", "exports", "esri/Map", "esri/views/MapView", "esri/geometry/P
                         z: result.geometry.z
                     }),
                     attributes: {
-                        ObjectID: graphics.length + 1,
-                        type: "thing " + (graphics.length + 1),
-                        name: "test " + (graphics.length + 1)
+                        ObjectID: layer.source.length + 1,
+                        type: "thing " + (layer.source.length + 1),
+                        name: "test " + (layer.source.length + 1)
                     }
                 };
                 layer.source.add(point);
-                console.log('point', point);
+                // console.log('point', point);
             });
-            // console.log('mapPoint', event.mapPoint)
-            // console.log("latitude", event.mapPoint.latitude);
-            // console.log("longitude", event.mapPoint.longitude);
-            // graphics.push()
-            // layer.source
-            // console.log('graphics', graphics)
-            // console.log('layer.source', layer.source.add(point))
         });
         var scaleBar = new ScaleBar({
             view: view,
@@ -91,6 +85,11 @@ define(["require", "exports", "esri/Map", "esri/views/MapView", "esri/geometry/P
         view.ui.add(scaleBar, {
             position: "bottom-left"
         });
+        var widget = new XYZ({
+            view: view,
+            layer: layer
+        });
+        view.ui.add(widget, "bottom-right");
     });
 });
 //# sourceMappingURL=main.js.map
