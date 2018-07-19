@@ -19,6 +19,11 @@ const view = new MapView({
   zoom: 4,
 });
 
+let getNorthingAndEasting = function(feature){
+	console.log('feature', feature)
+	return { e: 'undefined', n: 'undefined' }
+}
+
 view.when(() => {
 	let graphics = [];
 	// let graphics = new Collection();
@@ -64,6 +69,12 @@ view.when(() => {
 
 	map.add(layer);
 
+	const statePlaneLayer = new FeatureLayer({
+		url: 'https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_State_Plane_Zones_NAD83/FeatureServer/0'
+	})
+
+	map.add(statePlaneLayer);
+
 	view.on('click', function(event){
 		// console.log('map.ground', map.ground.queryElevation(event.mapPoint))
 		map.ground.queryElevation(event.mapPoint, {
@@ -71,22 +82,37 @@ view.when(() => {
 			demResolution: 'finest-contiguous'
 			})
 			.then(function(result){
-				// console.log('result.geometry', result.geometry)
-				// console.log('result.sampleInfo', result.sampleInfo)
-				let point = {
-					geometry: new Point({
-						x: event.mapPoint.longitude,
-						y: event.mapPoint.latitude,
-						z: result.geometry.z
-					}),
-					attributes: {
-						ObjectID: layer.source.length + 1,
-						type: "thing " + (layer.source.length + 1),
-						name: "test " + (layer.source.length + 1)
-					}
-				};
-				layer.source.add(point)
-				// console.log('point', point);
+				statePlaneLayer.queryFeatures({
+			    	geometry: result.geometry,
+			    	returnGeometry: true
+			    }).then(function(results) {
+					console.log('results', results.get('features')[0].get('attributes'))
+			      // do something with the resulting graphics
+			    	// graphics = results.features;
+					// console.log('result.geometry', result.geometry)
+					// console.log('result.sampleInfo', result.sampleInfo)
+					// let s = { e: undefined, n: undefined };
+					let s = getNorthingAndEasting(result.geometry)
+					// console.log('stuff', getNorthingAndEasting(result.sampleInfo))
+					let point = {
+						geometry: new Point({
+							x: event.mapPoint.longitude,
+							y: event.mapPoint.latitude,
+							z: result.geometry.z
+						}),
+						attributes: {
+							ObjectID: layer.source.length + 1,
+							type: "thing " + (layer.source.length + 1),
+							name: "test " + (layer.source.length + 1),
+							statePlaneCoordSystem: 'test',
+							easting: s.e,
+							northing: s.n
+						}
+					};
+					layer.source.add(point)
+					// console.log('point', point);
+			    });
+
 			});
 
 	})

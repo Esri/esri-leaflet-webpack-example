@@ -16,7 +16,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/core/tsSupport/decorateHelper", "esri/core/accessorSupport/decorators", "esri/widgets/Widget", "dojo/store/Memory", "dgrid/Grid", "esri/widgets/support/widget"], function (require, exports, __extends, __decorate, decorators_1, Widget, Memory, Grid, widget_1) {
+define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/core/tsSupport/decorateHelper", "esri/core/accessorSupport/decorators", "esri/widgets/Widget", "dgrid/Grid", "esri/widgets/support/widget"], function (require, exports, __extends, __decorate, decorators_1, Widget, Grid, widget_1) {
     "use strict";
     var CSS = {
     // base: "esri-hello-world",
@@ -33,10 +33,6 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
             var _this = _super !== null && _super.apply(this, arguments) || this;
             _this.layer = {};
             return _this;
-            // // Private method
-            // private _calcFeet(meters): float {
-            // 	return meters * 3.28084
-            // }
         }
         // Public method
         XYZ.prototype.render = function () {
@@ -60,66 +56,53 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
             //
             // https://developers.arcgis.com/javascript/latest/sample-code/sandbox/index.html?sample=highlight-features-by-geometry
             var grid = new Grid({
-                columns: {
-                    name: 'Name',
-                    y: 'Latitude',
-                    x: 'Longitude',
-                    z: 'Elevation (m)',
-                    zf: 'Elevation (ft)',
-                    e: 'Easting',
-                    n: 'Northing',
-                    dems: 'DEM Source',
-                    demr: 'DEM Resolution'
-                },
+                columns: columns,
             }, 'grid');
+            var columns = {
+                name: 'Name',
+                y: 'Latitude',
+                x: 'Longitude',
+                z: 'Elevation (m)',
+                zf: 'Elevation (ft)',
+                e: 'Easting',
+                n: 'Northing',
+                dems: 'DEM Source',
+                demr: 'DEM Resolution'
+            };
             var that = this;
             this.layer.source.on('change', function (e) {
-                grid.set('store', new Memory({
-                    data: that._generateGridData(this.layer.source)
-                }));
+                // grid.set('store', new Memory({
+                // 	data: that._generateGridData(this.layer.source)
+                // }))
                 // console.log('event', e)
                 // console.log("generated grid data", that._generateGridData(this.layer.source)
-                // grid.renderArray(that._generateGridData(this.layer.source));
+                // console.log('grid', grid)
+                grid.refresh();
+                grid.renderArray(that._generateGridData(this.layer.source));
             });
             return (widget_1.tsx("div", { class: "widgetContainer" },
                 widget_1.tsx("div", { id: "grid" })));
         };
-        // Private method
-        // private _renderItem(feature, index): any {
-        // 	console.log('feature', feature.get('attributes'))
-        // 	console.log('geometry', feature.get('geometry'))
-        // 	return (
-        // 		<tr key={feature.get('attributes').ObjectID}>
-        // 			<td>{feature.get('attributes').name}</td>
-        // 			<td>{feature.get('geometry').get('y').toFixed(4)}</td>
-        // 			<td>{feature.get('geometry').get('x').toFixed(4)}</td>
-        // 			<td>{Math.floor(feature.get('geometry').get('z'))}</td>
-        // 			<td>{Math.floor(this._calcFeet(feature.get('geometry').get('z')))}</td>
-        // 			<td>easting</td>
-        // 			<td>northing</td>
-        // 			<td>dem source</td>
-        // 			<td>dem resolution</td>
-        // 		</tr>
-        // 	)
-        // }
         XYZ.prototype._generateGridData = function (source) {
             // let dataArray = [];
             // console.log('source', source)
             return source.get('items').map(function (feature) {
+                // let statePlaneCoords = this._getNorthingAndEasting(feature);
+                // console.log('statePlaneCoords', statePlaneCoords)
+                console.log('feature', feature);
                 return {
                     name: feature.get('attributes').name,
                     y: feature.get('geometry').get('y').toFixed(4),
                     x: feature.get('geometry').get('x').toFixed(4),
                     z: Math.floor(feature.get('geometry').get('z')),
                     zf: Math.floor(3.28084 * (feature.get('geometry').get('z'))),
-                    e: 'Easting',
-                    n: 'Northing',
+                    e: feature.get('attributes').easting,
+                    n: feature.get('attributes').northing,
                     dems: 'DEM Source',
                     demr: 'DEM Resolution'
                 };
                 // return featureObject
             });
-            // return dataArray
         };
         __decorate([
             decorators_1.property(),
