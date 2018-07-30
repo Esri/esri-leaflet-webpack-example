@@ -98,7 +98,7 @@ class XYZ extends declared(Widget) {
 		return source.get('items').map(function(feature){
 			// let statePlaneCoords = this._getNorthingAndEasting(feature);
 			// console.log('statePlaneCoords', statePlaneCoords)
-			console.log('feature', feature)
+			// console.log('feature', feature)
 			return {
 				name: feature.get('attributes').name,
 			    y: feature.get('geometry').get('y').toFixed(4),
