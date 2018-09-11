@@ -28,6 +28,12 @@
 		  /* width: 100%; */
 	  }
 
+	  #importDiv {
+		  position: absolute;
+		  left: 10;
+		  bottom: 210;
+	  }
+
 	  .dgrid-column-h {
 		  width: 210px
 	  }
@@ -97,11 +103,16 @@
         ]
       };
     </script>
+	<!-- <script src="./node_modules/kmz-geojson/index.js"></script> -->
     <script src="https://js.arcgis.com/4.8/"></script>
   </head>
   <body>
     <div id="viewDiv"></div>
 	<div id="grid"></div>
+  	<div id='importDiv'>
+  		<label for='kmzInput'>Import KMZ:</label>
+  		<input type='file' id="kmzInput" name='kmz' accept='.kmz'/>
+  	</div>
     <script>require(["app/main"]);</script>
   </body>
 </html>

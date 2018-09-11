@@ -128,6 +128,16 @@ define(["require", "exports", "esri/Map", "esri/views/MapView", "esri/geometry/P
         });
         // console.log('grid', grid)
         grid.startup();
+        //
+        var kmzInput = document.getElementById('kmzInput');
+        // console.log('kmzInput', kmzInput)
+        kmzInput.addEventListener('change', processKmz, false);
+        function processKmz() {
+            console.log('this', this.files[0]);
+            // read the kmz
+            // identify point features
+            // for each point feature, pass to addPoint()
+        }
         var addPoint = function (input) {
             map.ground.queryElevation(input, {
                 returnSampleInfo: true,

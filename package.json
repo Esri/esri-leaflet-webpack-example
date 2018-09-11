@@ -10,14 +10,21 @@
     "dev": "tsc -w",
     "lint": "tslint './app/*.ts'"
   },
-  "keywords": ["esri", "typescript"],
+  "keywords": [
+    "esri",
+    "typescript"
+  ],
   "author": "Rene Rubalcava <rrubalcava@esri.com>",
   "license": "Apache-2.0",
   "devDependencies": {
     "tslint": "^4.2.0"
   },
   "dependencies": {
+    "@types/arcgis-js-api": "^4.5.0",
+    "@types/node": "^10.9.4",
+    "browserify": "^16.2.2",
+    "kmz-geojson": "^0.1.0",
     "typescript": "^2.4.1",
-    "@types/arcgis-js-api": "^4.5.0"
+    "zipjs-browserify": "^1.0.1"
   }
 }
