@@ -1,118 +1,32 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
-    <title>XYZ Typescript</title>
-    <style>
-      html,
-      body {
-        padding: 0;
-        margin: 0;
-        height: 100%;
-        width: 100%;
-      }
-	  #viewDiv {
-		padding: 0;
-		margin: 0;
-		height: 100%;
-		width: 100%;
-	  }
-	  #grid {
-		  position: absolute;
-		  bottom: 0;
-		  left: 0;
-		  right: 0;
-		  padding: 0;
-		  margin: 0;
-		  height: 200px;
-		  /* width: 100%; */
-	  }
 
-	  #importDiv {
-		  position: absolute;
-		  left: 10;
-		  bottom: 210;
-	  }
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>XYZ Tool 2</title>
+	<link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/css/main.css">
+	<link rel="stylesheet" href="./index.css">
+	<script src="https://js.arcgis.com/4.8/"></script>
+	<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrwsJMebA-yZIsSwq4SHQ_FoeZZ7ItBJQ&callback=initMap">
+	</script>
+	<script src="./ZipFile.complete.js"></script>
+	<script src="./geoxml3.js"></script>
+	<!-- <script src="./ProjectedOverlay.js"></script> -->
+	<script src="./wkid.js"></script>
+</head>
 
-	  .dgrid-column-h {
-		  width: 210px
-	  }
-
-	  .dgrid-column-dems {
-		  width: 200px
-	  }
-
-	  .dgrid-column-z {
-		  width: 100px
-	  }
-
-	  .dgrid-column-zf {
-		  width: 100px
-	  }
-
-	  .dgrid-column-demr {
-		  width: 160px
-	  }
-
-	  .field-z, .field-zf, .field-demr, .field-e, .field-n {
-		  text-align: right !important
-	  }
-
-	  /* .widgetDiv {
-		  background: #fff;
-		  position: absolute;
-		  bottom: 10px;
-		  left: 10px;
-		  right: 10px;
-		  height: 30%;
-	  } */
-	  	/* .widgetContainer {
-			background: #fff;
-			padding: 10px;
-			width: 100vw;
-			height: 200px;
-		}
-
-		.xyzTable {
-			border-collapse: collapse;
-			border: solid 0.5px;
-		}
-
-		.xyzTable cell {
-			border: solid 0.5px #333;
-		} */
-
-		.dgrid {
-			/* height: 100% !important; */
-			background-color: #fff;
-		}
-
-		.dgrid-row-table {
-			height: auto !important;
-		}
-    </style>
-    <link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/css/main.css">
-    <script>
-      var locationPath = location.pathname.replace(/\/[^\/]+$/, "/");
-      window.dojoConfig = {
-        packages: [
-          {
-            name: "app",
-            location: locationPath + "app"
-          }
-        ]
-      };
-    </script>
-	<!-- <script src="./node_modules/kmz-geojson/index.js"></script> -->
-    <script src="https://js.arcgis.com/4.8/"></script>
-  </head>
-  <body>
-    <div id="viewDiv"></div>
-	<div id="grid"></div>
+<body>
+	<div id="viewDiv"></div>
   	<div id='importDiv'>
-  		<label for='kmzInput'>Import KMZ:</label>
-  		<input type='file' id="kmzInput" name='kmz' accept='.kmz'/>
+  		<label for='kmzInput'>Import KML:</label>
+  		<input type='file' id="kmzInput" name='kmz' accept='.kml,.kmz'/>
+		<button id='exportCsv'>Export CSV</button>
   	</div>
-    <script>require(["app/main"]);</script>
-  </body>
+	<div id="grid"></div>
+	<script src="./index.js"></script>
+
+</body>
+
 </html>
