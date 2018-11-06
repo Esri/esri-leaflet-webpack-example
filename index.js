@@ -16,8 +16,10 @@ require([
 			"dgrid/Keyboard",
 			"dgrid/Selection",
 			"dgrid/OnDemandGrid",
-			"dojo/html"
-		], function(Map, MapView, SceneView, Basemap, Point, FeatureLayer, ScaleBar, declare, Collection, SpatialReference, Projection, Memory, Editor, Keyboard, Selection, OnDemandGrid, html) {
+			"dojo/html",
+			// "esri/views/ui/UI"
+			"esri/geometry/Extent"
+		], function(Map, MapView, SceneView, Basemap, Point, FeatureLayer, ScaleBar, declare, Collection, SpatialReference, Projection, Memory, Editor, Keyboard, Selection, OnDemandGrid, html, Extent) {
 			// console.log('zones', zones)
 
 
@@ -104,8 +106,23 @@ require([
 						addPoint(newKmlPoint)
 				}
 
-				var myParser = new geoXML3.parser({createMarker: dealWithKml})
+				function zoomToLocation(args){
+					console.log('args', args)
+					// console.log('view', view)
+					var ext = new Extent({
+						xmin: args[0].bounds.j.j,
+						ymin: args[0].bounds.l.j,
+						xmax: args[0].bounds.j.l,
+						ymax: args[0].bounds.l.l,
+						// spatialReference: new SpatialReference({wkid:3857})
+					})
+					console.log('extent', ext)
+					view.goTo(ext)
+					// console.log('args', args)
+				}
 
+				var myParser = new geoXML3.parser({createMarker: dealWithKml, afterParse: zoomToLocation, createOverlay: function(){ alert("Overlays not supported")}})
+				// console.log('myParser', myParser)
 				var kmzInput = document.getElementById('kmzInput')
 
 				kmzInput.addEventListener('change', processKmz, false)
@@ -154,7 +171,7 @@ require([
 						//			of the string (after the last record).  Default is false.
 
 						// jshint maxcomplexity: 15
-						console.log('this', this)
+						// console.log('this', this)
 						options = options || {};
 
 						var alwaysQuote = options.alwaysQuote;
@@ -266,6 +283,15 @@ require([
 					}
 				});
 
+
+				var importDivElement = document.getElementById('importDiv')
+				// console.log(importDivElement)
+				// var importDiv = new UI({
+				// 	container: importDivElement,
+				// 	padding: 10
+				// })
+				view.ui.add(importDivElement, "top-right")
+
 				map.layers.add(layer);
 
 				var statePlaneLayer = new FeatureLayer({
@@ -318,15 +344,21 @@ require([
 							return result
 						})
 						.then(r => {
-							console.log('result again', r)
-							console.log('layer.source', layer.source.isCollection())
-							layer.source.remove(row.data.ObjectID)
-							layer.refresh()
+							// console.log('result again', r)
+							// console.log('layer.source', layer.source)
+							// find the item
+							var item = layer.source.find(function(item) {
+								return item.ObjectID === row.data.ObjectID
+							})
+							// console.log('item', item)
+							layer.source.remove(item)
+							// console.log('layer.source after', layer.source)
+							// layer.refresh()
 						})
 					// delete it from the featurelayer source
-						console.log('layer.source', layer.source)
-						console.log(layer.source.remove(row.data))
-						layer.refresh()
+						// console.log('layer.source', layer.source)
+						// console.log(layer.source.remove(row.data))
+						// layer.refresh()
 
 				})
 
@@ -378,6 +410,7 @@ require([
 								};
 								// console.log('point', point)
 								layer.source.add(point)
+								// view.goTo(layer)
 								layer.refresh()
 								// console.log('layer', layer.get('source').get('items'))
 								dataStore.add(point)
