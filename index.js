@@ -45,7 +45,7 @@ require([
 				zoom: 4,
 			});
 
-			view.when(() => {
+			view.when( function() {
 
 				var columns = [{
 						label: 'Name',
@@ -300,7 +300,7 @@ require([
 
 				map.layers.add(statePlaneLayer);
 
-				var gridColumns = [...columns]
+				var gridColumns = columns
 
 				gridColumns.push({
 					label: '',
@@ -318,13 +318,13 @@ require([
 					columns: gridColumns,
 				}, 'grid');
 
-				grid.on("dgrid-datachange", event => {
+				grid.on("dgrid-datachange", function(event) {
 					// console.log('event', event)
 					var change = Object.assign({}, event.cell.row.data)
 					change[event.cell.column.field] = event.value;
 					// console.log('change', change)
 					dataStore.put(change)
-						.then(object => {
+						.then(function(object) {
 							// layer.source.put(object)
 							console.log('updated ', object)
 							// console.log('dataStore', dataStore)
@@ -338,12 +338,12 @@ require([
 					console.log('row', row.data)
 					// delete the item from the dgrid memory
 					dataStore.remove(row.data.ObjectID)
-						.then(result => {
+						.then(function(result) {
 							console.log('ObjectID ' + row.data.ObjectID + ' deleted? ' + result)
 							grid.refresh();
 							return result
 						})
-						.then(r => {
+						.then(function(r) {
 							// console.log('result again', r)
 							// console.log('layer.source', layer.source)
 							// find the item
@@ -384,7 +384,9 @@ require([
 								var testFips = thisFips.length < 4 ? "0".concat(thisFips.toString()) : thisFips;
 								// console.log('attributes', statePlaneResults.get('features')[0].get('attributes'))
 								// console.log('testFips', testFips)
-								var thisWkid = zones.find(z => z.fips.toString() === testFips.toString())
+								var thisWkid = zones.find(function(z){
+									return z.fips.toString() === testFips.toString()
+								})
 								// console.log('thisWkid', thisWkid)
 								var thisSpatialReference = new SpatialReference(thisWkid)
 								// console.log('thisSpatialReference', thisSpatialReference)
@@ -421,7 +423,7 @@ require([
 						});
 				}
 
-				Projection.load().then(() => {
+				Projection.load().then(function() {
 					view.on('click', function(event) {
 						// console.log('map.ground', map.ground.queryElevation(event.mapPoint))
 						addPoint(event.mapPoint)
