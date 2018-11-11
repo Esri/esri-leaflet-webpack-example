@@ -30,7 +30,7 @@ const ourMap = map('map').setView([51.505, -0.09], 11);
 // add basemap
 basemapLayer('Oceans').addTo(ourMap);
 
-// // add layer
+// add layer
 featureLayer({
   url: 'https://services.arcgis.com/uCXeTVveQzP4IIcx/arcgis/rest/services/gisday/FeatureServer/0/'
 }).addTo(ourMap);
