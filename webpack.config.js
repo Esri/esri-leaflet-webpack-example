@@ -7,6 +7,9 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   },
   mode: 'production',
-  plugins: []
+  plugins: [],
+  performance: {
+    hints: false,
+  },
 };
 
