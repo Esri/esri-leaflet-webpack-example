@@ -1,4 +1,8 @@
-require([
+if (typeof WebAssembly != "object"){
+	alert("Internet Explorer Not Supported. This page uses advanced browser features that are not supported by IE 11. Please use a recent version of Google Chrome, Mozilla Firefox or Microsoft Edge.")
+} else {
+
+	require([
 			"esri/Map",
 			"esri/views/MapView",
 			"esri/views/SceneView",
@@ -433,3 +437,4 @@ require([
 
 
 		});
+}
