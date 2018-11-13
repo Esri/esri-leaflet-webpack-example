@@ -194,7 +194,7 @@ if (typeof WebAssembly != "object"){
 								var value = i < 0 ? fieldNames[j].label : data[i][fieldNames[j].field];
 								console.log('value', value)
 								var needsQuotes = alwaysQuote ||
-									value.toString().indexOf('"') >= 0 || value.toString().indexOf(delimiter) >= 0;
+									value && value.toString().indexOf('"') >= 0 || value && value.toString().indexOf(delimiter) >= 0;
 								output += (j > 0 ? delimiter : '') +
 									(needsQuotes ? '"' + value.toString().replace(singleQuoteRx, '""') + '"' : value);
 							}
