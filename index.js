@@ -193,10 +193,12 @@ if (typeof WebAssembly != "object"){
 							for (var j = 0; j < fieldNames.length; j++) {
 								var value = i < 0 ? fieldNames[j].label : data[i][fieldNames[j].field];
 								console.log('value', value)
-								var needsQuotes = alwaysQuote ||
-									value && value.toString().indexOf('"') >= 0 || value && value.toString().indexOf(delimiter) >= 0;
-								output += (j > 0 ? delimiter : '') +
-									(needsQuotes ? '"' + value.toString().replace(singleQuoteRx, '""') + '"' : value);
+								if (value){
+									var needsQuotes = alwaysQuote ||
+										value && value.toString().indexOf('"') >= 0 || value && value.toString().indexOf(delimiter) >= 0;
+										output += (j > 0 ? delimiter : '') +
+											(needsQuotes ? '"' + value.toString().replace(singleQuoteRx, '""') + '"' : value);
+								}
 							}
 						}
 
