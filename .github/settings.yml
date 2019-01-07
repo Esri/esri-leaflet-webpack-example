@@ -26,39 +26,59 @@ labels:
     color: cc317c
   - name: "wontfix"
     color: FFFFFF
-  - name: "Sprint 11 2018-05-21"
+  - name: "Sprint 00 2018-12-31"
     color: 9809f7
-  - name: "Sprint 12 2018-06-04"
+  - name: "Sprint 01 2019-01-14"
     color: 9809f7
-  - name: "Sprint 13 2018-06-18"
+  - name: "Sprint 02 2019-01-28"
     color: 9809f7
-  - name: "Sprint 14 2018-07-02"
+  - name: "Sprint 03 2019-02-11"
     color: 9809f7
-  - name: "Sprint 15 2018-07-16"
+  - name: "Sprint 04 2019-02-25"
     color: 9809f7
-  - name: "Sprint 16 2018-07-30"
+  - name: "Sprint 05 2019-03-11"
     color: 9809f7
-  - name: "Sprint 17 2018-08-13"
+  - name: "Sprint 06 2019-03-25"
     color: 9809f7
-  - name: "Sprint 18 2018-08-27"
+  - name: "Sprint 07 2019-04-08"
     color: 9809f7
-  - name: "Sprint 19 2018-09-10"
+  - name: "Sprint 08 2019-04-22"
     color: 9809f7
-  - name: "Sprint 20 2018-09-24"
+  - name: "Sprint 09 2019-05-06"
     color: 9809f7
-  - name: "Sprint 21 2018-10-08"
+  - name: "Sprint 11 2019-05-20"
     color: 9809f7
-  - name: "Sprint 22 2018-10-22"
+  - name: "Sprint 12 2019-06-03"
     color: 9809f7
-  - name: "Sprint 23 2018-11-05"
+  - name: "Sprint 13 2019-06-17"
     color: 9809f7
-  - name: "Sprint 24 2018-11-19"
+  - name: "Sprint 14 2019-07-01"
     color: 9809f7
-  - name: "Sprint 25 2018-12-03"
+  - name: "Sprint 15 2019-07-15"
     color: 9809f7
-  - name: "Sprint 26 2018-12-17"
+  - name: "Sprint 16 2019-07-29"
     color: 9809f7
-  - name: "Sprint 27 2018-12-31"
+  - name: "Sprint 17 2019-08-12"
+    color: 9809f7
+  - name: "Sprint 18 2019-08-26"
+    color: 9809f7
+  - name: "Sprint 19 2019-09-09"
+    color: 9809f7
+  - name: "Sprint 20 2019-09-23"
+    color: 9809f7
+  - name: "Sprint 21 2019-10-07"
+    color: 9809f7
+  - name: "Sprint 22 2019-10-21"
+    color: 9809f7
+  - name: "Sprint 23 2019-11-04"
+    color: 9809f7
+  - name: "Sprint 24 2019-11-18"
+    color: 9809f7
+  - name: "Sprint 25 2019-12-02"
+    color: 9809f7
+  - name: "Sprint 26 2019-12-16"
+    color: 9809f7
+  - name: "Sprint 27 2019-12-30"
     color: 9809f7
   - name: "Sprint 99 Backlog"
     color: 9809f7
