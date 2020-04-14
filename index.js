@@ -22,8 +22,10 @@ if (typeof WebAssembly != "object"){
 			"dgrid/OnDemandGrid",
 			"dojo/html",
 			// "esri/views/ui/UI"
-			"esri/geometry/Extent"
-		], function(Map, MapView, SceneView, Basemap, Point, FeatureLayer, ScaleBar, declare, Collection, SpatialReference, Projection, Memory, Editor, Keyboard, Selection, OnDemandGrid, html, Extent) {
+			"esri/geometry/Extent",
+			"esri/widgets/BasemapGallery",
+			"esri/widgets/Expand"
+		], function(Map, MapView, SceneView, Basemap, Point, FeatureLayer, ScaleBar, declare, Collection, SpatialReference, Projection, Memory, Editor, Keyboard, Selection, OnDemandGrid, html, Extent, BasemapGallery, Expand) {
 			// console.log('zones', zones)
 
 
@@ -34,20 +36,26 @@ if (typeof WebAssembly != "object"){
 				ground: "world-elevation"
 			});
 
-			// var view = new SceneView({
-			// 	map: map,
-			// 	container: "viewDiv",
-			// 	center: [-100, 40],
-			// 	zoom: 4,
-			// });
-
-
 			var view = new MapView({
 				map: map,
 				container: "viewDiv",
 				center: [-100, 40],
 				zoom: 4,
 			});
+
+			var basemapGallery = new BasemapGallery({
+				view: view,
+				container: document.createElement('div')
+			})
+
+			var bgExpand = new Expand({
+				view: view,
+				content: basemapGallery
+			})
+
+			view.ui.add(bgExpand, {
+				position: "top-left"
+			})
 
 			view.when( function() {
 
@@ -58,6 +66,14 @@ if (typeof WebAssembly != "object"){
 						editOn: 'dblclick'
 					},
 					{
+						label: 'Northing',
+						field: 'n'
+					},
+					{
+						label: 'Easting',
+						field: 'e'
+					},
+					{
 						label: 'Latitude',
 						field: 'y'
 					},
@@ -66,22 +82,14 @@ if (typeof WebAssembly != "object"){
 						field: 'x'
 					},
 					{
-						label: 'Elevation (m)',
-						field: 'z',
-						className: 'dgrid-column-z'
-					},
-					{
 						label: 'Elevation (ft)',
 						field: 'zf',
 						className: 'dgrid-column-zf'
 					},
 					{
-						label: 'Easting',
-						field: 'e'
-					},
-					{
-						label: 'Northing',
-						field: 'n'
+						label: 'Elevation (m)',
+						field: 'z',
+						className: 'dgrid-column-z'
 					},
 					{
 						label: 'Horizontal Datum',
