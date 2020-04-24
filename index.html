@@ -6,27 +6,23 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
 	<title>XYZ Tool 2</title>
-	<link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/css/main.css">
+	<link rel="stylesheet" href="https://js.arcgis.com/4.14/esri/css/main.css">
 	<link rel="stylesheet" href="./index.css">
-	<script src="https://js.arcgis.com/4.8/"></script>
-	<script async defer
-		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrwsJMebA-yZIsSwq4SHQ_FoeZZ7ItBJQ&callback=initMap">
-	</script>
-	<script src="./ZipFile.complete.js"></script>
-	<script src="./geoxml3.js"></script>
-	<!-- <script src="./ProjectedOverlay.js"></script> -->
-	<script src="./wkid.js"></script>
+	<script type="text/javascript" src="./jszip.min.js"></script>
+	<script type="text/javascript" src="./togeojson.js"></script>
+	<script type="text/javascript" src="./wkid.js"></script>
 </head>
 
 <body>
 	<div id="viewDiv"></div>
 	<div id="grid"></div>
 	<div id='importDiv'>
-  		<label for='kmzInput'>Import KML:</label>
+  		<label for='kmzInput'>Import KML or KMZ:</label>
   		<input type='file' id="kmzInput" name='kmz' autocomplete='off' accept='.kml,.kmz'/>
 		<button id='exportCsv'>Export Table</button>
-  	</div>
-	<script src="./index.js"></script>
+	  </div>
+	<script type="text/javascript" src="https://js.arcgis.com/4.14/"></script>
+	<script type="text/javascript" src="./index.js"></script>
 
 </body>
 

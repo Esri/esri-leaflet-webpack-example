@@ -7,6 +7,7 @@ if (typeof WebAssembly != "object"){
 			"esri/views/MapView",
 			"esri/views/SceneView",
 			"esri/Basemap",
+			"esri/Graphic",
 			"esri/geometry/Point",
 			"esri/layers/FeatureLayer",
 			"esri/widgets/ScaleBar",
@@ -25,15 +26,15 @@ if (typeof WebAssembly != "object"){
 			"esri/geometry/Extent",
 			"esri/widgets/BasemapGallery",
 			"esri/widgets/Expand"
-		], function(Map, MapView, SceneView, Basemap, Point, FeatureLayer, ScaleBar, declare, Collection, SpatialReference, Projection, Memory, Editor, Keyboard, Selection, OnDemandGrid, html, Extent, BasemapGallery, Expand) {
+		], function(Map, MapView, SceneView, Basemap, Graphic, Point, FeatureLayer, ScaleBar, declare, Collection, SpatialReference, Projection, Memory, Editor, Keyboard, Selection, OnDemandGrid, html, Extent, BasemapGallery, Expand) {
 			// console.log('zones', zones)
 
 
 			// // console.log('zones', zones)
 			// console.log('window', window)
 			var map = new Map({
-				basemap: "streets",
-				ground: "world-elevation"
+				basemap: "topo",
+				ground: "world-topobathymetry"
 			});
 
 			var view = new MapView({
@@ -108,18 +109,21 @@ if (typeof WebAssembly != "object"){
 					}
 				];
 
-				function dealWithKml(result){
+				function addGeojson(result){
 					// console.log('result', result)
-						var newKmlPoint = new Point({
-							latitude: result.latlng.lat(),
-							longitude: result.latlng.lng()
+					result.features.forEach(f => {
+						var newPoint = new Point({
+							latitude: f.geometry.coordinates[1],
+							longitude: f.geometry.coordinates[0]
 						})
-						newKmlPoint.name = result.name
-						addPoint(newKmlPoint)
+						newPoint.name = f.properties.name;
+						// console.log('newPoint', newPoint)
+						addPoint(newPoint)
+					})
 				}
 
 				function zoomToLocation(args){
-					console.log('args', args)
+					// console.log('args', args)
 					// console.log('view', view)
 					var ext = new Extent({
 						xmin: args[0].bounds.j.j,
@@ -133,35 +137,61 @@ if (typeof WebAssembly != "object"){
 					// console.log('args', args)
 				}
 
-				var myParser = new geoXML3.parser({createMarker: dealWithKml, afterParse: zoomToLocation, createOverlay: function(){ alert("Overlays not supported")}})
-				// console.log('myParser', myParser)
 				var kmzInput = document.getElementById('kmzInput')
 
-				kmzInput.addEventListener('change', processKmz, false)
+				kmzInput.addEventListener('change', processInput, false)
 
-				// console.log('window.geoXML3', window.geoXML3)
-				function processKmz(e){
+				function processInput(e){
 					var file = e.target.files[0];
 					// console.log("file", file);
-					var reader = new FileReader()
-					reader.onload = function(){
-						// console.log('reader.result', reader.result)
+					new Promise((resolve, reject) => {
 						if (file.type === "application/vnd.google-earth.kml+xml") {
-							myParser.parseKmlString(reader.result)
+							// geojson = parseKml(reader.result)
+							var reader = new FileReader();
+							reader.onload = function(){
+								var json = parseKml(reader.result);
+								resolve(json);
+							}
+							reader.readAsText(file);
 						} else if (file.type === "application/vnd.google-earth.kmz") {
-							myParser.parse(reader.result)
+							unzipKmz(file)
+								.then(kml => parseKml(kml))
+								.then(json => resolve(json))
 						} else {
-							alert("Parser error");
+							// alert("Parser error");
+							reject('Parser error');
 						}
-					};
-					if (file.type === "application/vnd.google-earth.kml+xml") {
-						reader.readAsText(file);
-					} else if (file.type === "application/vnd.google-earth.kmz") {
-						reader.readAsDataURL(file);
-					} else {
-						alert("Incorrect file type");
-					}
+					})
+					.then(geojson => addGeojson(geojson))
+					.catch(err => console.log('error!', err))
+				}
 
+				function parseKml(kml){
+					var domparser = new DOMParser();
+					return new Promise((resolve, reject) => {
+						var parsedXml = domparser.parseFromString(kml, 'text/xml');
+						if (parsedXml.documentElement.nodeName == "parsererror"){
+							reject('Error while parsing KML')
+						} else {
+							var json = toGeoJSON.kml(parsedXml);
+							resolve(json)
+						}
+					})
+				}
+
+				function unzipKmz(kmz){
+					// console.log('kmz', kmz)
+					return JSZip.loadAsync(kmz)
+						.then(function(zip){
+							// console.log('zip', zip)
+							var docPromises = [];
+							zip.forEach(function( relativePath, zipEntry){
+								docPromises.push(zipEntry.async('string'));
+							})
+							return Promise.all(docPromises);
+						})
+						// maybe eventually there will be more files?
+						.then(result => result[0])
 				}
 
 				var newMemory = declare(Memory, {
@@ -189,6 +219,7 @@ if (typeof WebAssembly != "object"){
 						var alwaysQuote = options.alwaysQuote;
 						var fieldNames = this.fieldNames;
 						var data = this.data;
+						console.log('datastore data', data)
 						var delimiter = this.delimiter;
 						var newline = this.newline;
 						var output = '';
@@ -213,7 +244,7 @@ if (typeof WebAssembly != "object"){
 						if (options.trailingNewline) {
 							output += newline;
 						}
-
+						console.log('output', output)
 						return output;
 			}
 				})
@@ -294,7 +325,21 @@ if (typeof WebAssembly != "object"){
 								width: 7
 							}
 						}
-					}
+					},
+					// labelingInfo: {
+					// 	symbol: {
+					// 		type: 'text',
+					// 		color: 'black',
+					// 		font: {
+					// 			size: 12,
+					// 			weight: 'bold'
+					// 		}
+					// 	},
+					// 	labelPlacement: 'above-right',
+					// 	labelExpressionInfo: {
+					// 		expression: '$feature.name'
+					// 	}
+					// }
 				});
 
 
@@ -340,7 +385,7 @@ if (typeof WebAssembly != "object"){
 					dataStore.put(change)
 						.then(function(object) {
 							// layer.source.put(object)
-							console.log('updated ', object)
+							// console.log('updated ', object)
 							// console.log('dataStore', dataStore)
 							grid.refresh()
 						})
@@ -349,26 +394,25 @@ if (typeof WebAssembly != "object"){
 
 				grid.on('.dgrid-column-delete > button:click', function(e){
 					var row = grid.row(e)
-					console.log('row', row.data)
+					// console.log('row', row.data)
 					// delete the item from the dgrid memory
 					dataStore.remove(row.data.ObjectID)
 						.then(function(result) {
-							console.log('ObjectID ' + row.data.ObjectID + ' deleted? ' + result)
-							grid.refresh();
-							return result
-						})
-						.then(function(r) {
+							// console.log('ObjectID ' + row.data.ObjectID + ' deleted? ' + result)
 							// console.log('result again', r)
-							// console.log('layer.source', layer.source)
-							// find the item
-							var item = layer.source.find(function(item) {
-								return item.ObjectID === row.data.ObjectID
-							})
-							// console.log('item', item)
-							layer.source.remove(item)
-							// console.log('layer.source after', layer.source)
-							// layer.refresh()
+							const query = layer.createQuery();
+							query.where = 'ObjectID = ' + row.data.ObjectID;
+							return layer.source.queryFeatures(query);
 						})
+						.then(function(queryResult){
+							return layer.source.applyEdits({deleteFeatures: queryResult.toJSON().features})
+						})
+						.then(function(deleteResult){
+							// console.log('deleteResult', deleteResult)
+							layer.refresh()
+							grid.refresh();
+						})
+						.catch(function(err){ console.log('error deleting item', err)})
 					// delete it from the featurelayer source
 						// console.log('layer.source', layer.source)
 						// console.log(layer.source.remove(row.data))
@@ -380,21 +424,37 @@ if (typeof WebAssembly != "object"){
 
 				var addPoint = function(input) {
 					// console.log('input', input)
+					const point = {}
 					map.ground.queryElevation(input, {
 							returnSampleInfo: true,
 							demResolution: 'finest-contiguous'
 						})
 						.then(function(elevationResult) {
-							// console.log('elevationResult', elevationResult)
-							// console.log('elevationResult.geomety', elevationResult.geometry)
+							var s = elevationResult.sampleInfo[0];
+							var g = elevationResult.geometry;
+							// console.log('elevationResult.sampleInfo', s)
+							// console.log('elevationResult.geometry', g)
+							point.geometry = g;
+							point.x = g.longitude.toFixed(4),
+							point.y = g.latitude.toFixed(4),
+							point.z = Math.floor(g.z);
+							point.zf = Math.floor(3.28084 * g.z);
+							point.demr = s.demResolution > -1 ? s.demResolution.toFixed(2) : 'n/a';
+							point.dems = s.demResolution > -1 ? s.source.sourceJSON.name : 'No data available';
+
 							var query = statePlaneLayer.createQuery();
 							// query.where = "STATE_NAME = 'Washington'";
-							query.geometry = elevationResult.geometry;
+							query.geometry = point.geometry;
 							query.returnGeometry = false;
 							query.outFields = ["ZONE", "ZONENAME", "FIPSZONE"];
-							statePlaneLayer.queryFeatures(query).then(function(statePlaneResults) {
-								// console.log('statePlaneResults', statePlaneResults.get('features')[0].get('attributes'))
-								var thisFips = statePlaneResults.get('features')[0].get('attributes').FIPSZONE;
+							return statePlaneLayer.queryFeatures(query);
+						})
+						.then(function(statePlaneResults) {
+							// console.log('statePlaneResults', statePlaneResults)
+							var sp = statePlaneResults.get('features')[0];
+							// console.log('sp result', sp)
+							if (sp) {
+								var thisFips = sp.get('attributes').FIPSZONE;
 								var testFips = thisFips.length < 4 ? "0".concat(thisFips.toString()) : thisFips;
 								// console.log('attributes', statePlaneResults.get('features')[0].get('attributes'))
 								// console.log('testFips', testFips)
@@ -404,37 +464,44 @@ if (typeof WebAssembly != "object"){
 								// console.log('thisWkid', thisWkid)
 								var thisSpatialReference = new SpatialReference(thisWkid)
 								// console.log('thisSpatialReference', thisSpatialReference)
-								var thisProjectedGeometry = Projection.project(elevationResult.geometry, thisSpatialReference)
-								// console.log('input', input)
-								var point = {
-									geometry: new Point({
-										x: input.get('longitude'),
-										y: input.get('latitude'),
-										z: elevationResult.geometry.z
-									}),
-									ObjectID: layer.source.length + 1,
-									name: input.name ? input.name : "New Point " + (layer.source.length + 1),
-									x: input.get('longitude').toFixed(4),
-									y: input.get('latitude').toFixed(4),
-									z: Math.floor(elevationResult.geometry.z),
-									zf: Math.floor(3.28084 * elevationResult.geometry.z),
-									h: 'NAD83(ft) ' + statePlaneResults.get('features')[0].get('attributes').ZONENAME,
-									e: Math.floor(thisProjectedGeometry.get('x')),
-									n: Math.floor(thisProjectedGeometry.get('y')),
-									demr: elevationResult.sampleInfo[0].demResolution.toFixed(2),
-									dems: 'ESRI WorldElevation Service'
-								};
-								// console.log('point', point)
-								layer.source.add(point)
-								// view.goTo(layer)
-								layer.refresh()
-								// console.log('layer', layer.get('source').get('items'))
-								dataStore.add(point)
-								// console.log('dataStore', dataStore)
-								grid.refresh()
-								// grid.set("collection", dataStore)
-							});
-						});
+								var thisProjectedGeometry = Projection.project(point.geometry, thisSpatialReference)
+								// console.log('thisProjectedGeometry', thisProjectedGeometry)
+								point.h = 'NAD83(ft) ' + sp.get('attributes').ZONENAME;
+								point.e = Math.floor(thisProjectedGeometry.get('x'));
+								point.n = Math.floor(thisProjectedGeometry.get('y'));
+								return point;
+							} else {
+								point.h = 'No State Plane Reference Found';
+								point.e = 'n/a';
+								point.n = 'n/a';
+								return point;
+							}
+						})
+						.then(function(point){
+							// console.log('completed point', point)
+							// point.ObjectID = layer.source.length + 1;
+							// const addFeature = new Graphic(point)
+							return layer.source.applyEdits({addFeatures: [point]})
+						})
+						.then(function(layerAddResults){
+							// console.log('addResults', layerAddResults.addFeatureResults[0].objectId)
+							const query = layer.createQuery();
+							query.where = 'ObjectID = ' + layerAddResults.addFeatureResults[0].objectId;
+							return layer.queryFeatures(query);
+						})
+						.then(function(queryResult){
+							// console.log('queryResult', queryResult.toJSON())
+							point.ObjectID = queryResult.toJSON().features[0].attributes.ObjectID;
+							point.name = input.name ? input.name : "New Point " + point.ObjectID;
+							return dataStore.add(point)
+						})
+						.then(function(dataStoreAddResults){
+							// console.log('dataStoreAddResults', dataStoreAddResults)
+							layer.refresh();
+							grid.refresh();
+							// view.goTo(layer);
+						})
+						.catch(err => console.log('addPoint err', err));
 				}
 
 				Projection.load().then(function() {
