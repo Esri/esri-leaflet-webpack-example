@@ -111,7 +111,8 @@ if (typeof WebAssembly != "object"){
 
 				function addGeojson(result){
 					// console.log('result', result)
-					var notPoints =[];
+					var notPoints = [];
+					var pointPromises = [];
 					result.features.forEach(f => {
 						if (f.geometry.type === 'Point'){
 							var newPoint = new Point({
@@ -120,7 +121,7 @@ if (typeof WebAssembly != "object"){
 							})
 							newPoint.name = f.properties.name;
 							// console.log('newPoint', newPoint)
-							addPoint(newPoint)
+							pointPromises.push(addPoint(newPoint))
 						} else {
 							notPoints.push(f);
 						}
@@ -128,22 +129,23 @@ if (typeof WebAssembly != "object"){
 					if (notPoints.length){
 						alert(notPoints.length + " non-point features were not added to the map.")
 					}
+					return Promise.all(pointPromises);
 				}
 
-				function zoomToLocation(args){
-					// console.log('args', args)
-					// console.log('view', view)
-					var ext = new Extent({
-						xmin: args[0].bounds.j.j,
-						ymin: args[0].bounds.l.j,
-						xmax: args[0].bounds.j.l,
-						ymax: args[0].bounds.l.l,
-						// spatialReference: new SpatialReference({wkid:3857})
-					})
-					console.log('extent', ext)
-					view.goTo(ext)
-					// console.log('args', args)
-				}
+				// function zoomToLocation(args){
+				// 	// console.log('args', args)
+				// 	// console.log('view', view)
+				// 	var ext = new Extent({
+				// 		xmin: args[0].bounds.j.j,
+				// 		ymin: args[0].bounds.l.j,
+				// 		xmax: args[0].bounds.j.l,
+				// 		ymax: args[0].bounds.l.l,
+				// 		// spatialReference: new SpatialReference({wkid:3857})
+				// 	})
+				// 	console.log('extent', ext)
+				// 	view.goTo(ext)
+				// 	// console.log('args', args)
+				// }
 
 				var kmzInput = document.getElementById('kmzInput')
 
@@ -171,6 +173,17 @@ if (typeof WebAssembly != "object"){
 						}
 					})
 					.then(geojson => addGeojson(geojson))
+					.then(addGeojsonResponse => {
+						// console.log('addGeojsonResponse', addGeojsonResponse)
+						return layer.queryExtent();
+					})
+					.then(extentResponse => {
+						var extent = extentResponse.extent;
+						extent = extent.expand(1.2);
+						view.goTo(extent, {
+							duration: 2000,
+						})
+					})
 					.catch(err => console.log('error!', err))
 				}
 
@@ -204,8 +217,8 @@ if (typeof WebAssembly != "object"){
 							// console.log('zip', zip)
 							var docPromises = [];
 							zip.forEach(function( relativePath, zipEntry){
-								console.log('relativePath', relativePath)
-								console.log('zipEntry', zipEntry)
+								// console.log('relativePath', relativePath)
+								// console.log('zipEntry', zipEntry)
 								docPromises.push(zipEntry.async('string'));
 							})
 							return Promise.all(docPromises);
@@ -407,13 +420,26 @@ if (typeof WebAssembly != "object"){
 					change[event.cell.column.field] = event.value;
 					// console.log('change', change)
 					dataStore.put(change)
-						.then(function(object) {
-							// layer.source.put(object)
-							// console.log('updated ', object)
-							// console.log('dataStore', dataStore)
-							grid.refresh()
+						.then(function(result) {
+							// console.log('change result', result)
+							// console.log('ObjectID ' + row.data.ObjectID + ' deleted? ' + result)
+							// console.log('result again', r)
+							const query = layer.createQuery();
+							query.where = 'ObjectID = ' + change.ObjectID;
+							return layer.queryFeatures(query);
 						})
-					// update the featurelayer store
+						.then(function(queryResult){
+							// console.log('queryResult', queryResult.features)
+							let updatedFeature = queryResult.features[0];
+							updatedFeature.setAttribute('Name', change.name);
+							return layer.applyEdits({updateFeatures: [updatedFeature]})
+						})
+						.then(function(updateResult){
+							// console.log('updateResult', updateResult)
+							layer.refresh()
+							grid.refresh();
+						})
+						.catch(function(err){ console.log('error updating item', err)})
 				})
 
 				grid.on('.dgrid-column-delete > button:click', function(e){
@@ -452,7 +478,7 @@ if (typeof WebAssembly != "object"){
 					const point = {
 						attributes: {}
 					}
-					map.ground.queryElevation(input, {
+					return map.ground.queryElevation(input, {
 							returnSampleInfo: true,
 							demResolution: 'finest-contiguous'
 						})
@@ -528,6 +554,7 @@ if (typeof WebAssembly != "object"){
 							// console.log('dataStoreAddResults', dataStoreAddResults)
 							layer.refresh();
 							grid.refresh();
+							return point;
 							// view.goTo(layer);
 						})
 						.catch(err => console.log('addPoint err', err));
@@ -547,6 +574,8 @@ if (typeof WebAssembly != "object"){
 								if (existingGraphic.length < 1){
 									addPoint(event.mapPoint)
 								}
+							} else {
+								addPoint(event.mapPoint)
 							}
 						})
 						// console.log('map.ground', map.ground.queryElevation(event.mapPoint))
