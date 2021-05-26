@@ -152,6 +152,7 @@ if (typeof WebAssembly != "object"){
 				kmzInput.addEventListener('change', processInput, false)
 
 				function processInput(e){
+					// console.log('e', e)
 					var file = e.target.files[0];
 					// console.log("file", file);
 					new Promise((resolve, reject) => {
@@ -165,16 +166,27 @@ if (typeof WebAssembly != "object"){
 							reader.readAsText(file);
 						} else if (file.type === "application/vnd.google-earth.kmz") {
 							unzipKmz(file)
-								.then(kml => parseKml(kml))
-								.then(json => resolve(json))
+								.then(kml => {
+									// console.log('kml', kml)
+									return parseKml(kml)
+								})
+								.then(json => {
+									// console.log('json', json)
+									resolve(json)
+								})
+									
 						} else {
 							// alert("Parser error");
 							reject('Parser error');
 						}
 					})
-					.then(geojson => addGeojson(geojson))
+					.then(geojson => {
+						// console.log('geojson', geojson)
+						return addGeojson(geojson)
+					})
 					.then(addGeojsonResponse => {
 						// console.log('addGeojsonResponse', addGeojsonResponse)
+						// console.log('layer', layer)
 						return layer.queryExtent();
 					})
 					.then(extentResponse => {
@@ -187,27 +199,32 @@ if (typeof WebAssembly != "object"){
 					.catch(err => console.log('error!', err))
 				}
 
-				function parseKml(kml){
+				async function parseKml(kml){
 					// console.log('kml', kml)
 					// var parser = new KmlReader();
 					// parser.parseMarkers(kml, function(m){
 					// 	console.log('m', m)
 					// })
-					kml = kml.replace(/(\w+):(\w+\=\"\w+")/g, '')
-					// console.log('fixed kml', kml)
+					// let cleanKml = kml.replace(/(\w+):(\w+\=\"\w+")/g, '')
+					let cleanKml = kml.replace(/(\w+)\:(\w+\=\"[A-Za-z0-9_,]+\")/g, '');
+
+					// console.log('fixed kml', cleanKml)
 					var domparser = new DOMParser();
-					return new Promise((resolve, reject) => {
-						var parsedXml = domparser.parseFromString(kml, 'application/xml');
-						// console.log('parsedXml', parsedXml)
-						if (parsedXml.documentElement.nodeName == "parsererror"){
-							reject('Error while parsing KML')
-						} else {
-							var json = toGeoJSON.kml(parsedXml);
-							// console.log('json', json)
-							resolve(json)
-						}
-					})
-					.catch(function(err) { console.log('error', err )})
+					try {
+						return new Promise((resolve, reject) => {
+							var parsedXml = domparser.parseFromString(cleanKml, 'application/xml');
+							if (parsedXml.getElementsByTagName('parsererror').length > 0) {
+								alert("Error while parsing KML")
+								reject('Error while parsing KML');
+							} else {
+								var json = toGeoJSON.kml(parsedXml);
+								// console.log('json', json);
+								resolve(json);
+							}
+						}).catch(err => console.log('err', err));
+					} catch (err) {
+						console.log('error', err);
+					}
 				}
 
 				function unzipKmz(kmz){
