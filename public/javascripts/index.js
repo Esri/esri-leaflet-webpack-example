@@ -12,7 +12,7 @@ var geoJsonLayer = L.geoJSON()
 	.addTo(map);
 
 function addGeojson(geoJson){
-	console.log('geoJson', geoJson);
+	// console.log('geoJson', geoJson);
 	geoJsonLayer.addData(geoJson);
 	map.fitBounds(geoJsonLayer.getBounds());
 }
@@ -24,7 +24,7 @@ inputElement.setAttribute('type', 'file');
 inputElement.addEventListener('input', function(e){
 	console.log(e.target.files);
 	const formData = new FormData();
-	formData.append('file', e.target.files[0])
+	// formData.append('file', e.target.files[0])
 	fetch('kmztogeojson', {
 		method: 'POST', 
 		body: formData
