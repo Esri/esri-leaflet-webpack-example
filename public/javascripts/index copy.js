@@ -152,12 +152,12 @@ if (typeof WebAssembly != "object"){
 				kmzInput.addEventListener('change', processInput, false)
 
 				function processInput(e){
-					// console.log('e', e)
+					console.log('e', e)
 					var file = e.target.files[0];
-					// console.log("file", file);
+					console.log("file", file);
 					new Promise((resolve, reject) => {
 						if (file.type === "application/vnd.google-earth.kml+xml") {
-							// geojson = parseKml(reader.result)
+							geojson = parseKml(reader.result)
 							var reader = new FileReader();
 							reader.onload = function(){
 								var json = parseKml(reader.result);
@@ -181,15 +181,16 @@ if (typeof WebAssembly != "object"){
 						}
 					})
 					.then(geojson => {
-						// console.log('geojson', geojson)
+						console.log('geojson', geojson)
 						return addGeojson(geojson)
 					})
 					.then(addGeojsonResponse => {
-						// console.log('addGeojsonResponse', addGeojsonResponse)
-						// console.log('layer', layer)
+						console.log('addGeojsonResponse', addGeojsonResponse)
+						console.log('layer', layer)
 						return layer.queryExtent();
 					})
 					.then(extentResponse => {
+						console.log('extentResponse', extentResponse)
 						var extent = extentResponse.extent;
 						extent = extent.expand(1.2);
 						view.goTo(extent, {
