@@ -10,6 +10,10 @@ body {
 	height: 100%;
 }
 
+.leaflet-container.crosshair-cursor-enabled {
+    cursor:crosshair;
+}
+
 .upload {
 	padding: 6px 8px;
 	font: 14px/16px Arial, Helvetica, sans-serif;
@@ -26,98 +30,20 @@ body {
 	width: 100%;
 }
 
-#grid {
-	/* position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 0;
-  margin: 0; */
-	height: 30%;
-	/* width: 100%; */
+#tableBody {
+	max-height: 300px !important;
+	overflow-y: auto;
 }
 
-#importDiv {
-	background-color: #fff;
-	padding: 10px;
-	/* position: absolute;
-  top: 10;
-  right: 10;
-  width: 100px; */
-	/* left: 10; */
-	/* bottom: 210; */
+.tableFixHead { 
+	overflow: auto;
+	height: 100px;
+	height: 300px;
 }
 
-.dgrid-column-h {
-	width: 210px
-}
-
-.dgrid-column-dems {
-	width: 200px
-}
-
-.dgrid-column-z {
-	width: 100px
-}
-
-.dgrid-column-zf {
-	width: 100px
-}
-
-.dgrid-column-demr {
-	width: 160px
-}
-
-.dgrid-column-delete {
-	width: 45px
-}
-
-.field-z,
-.field-zf,
-.field-demr,
-.field-e,
-.field-n,
-.field-delete {
-	text-align: right !important
-}
-
-.deleteButton {
-	background-color: red;
-	color: white;
-	padding: 0 2;
-	border-radius: 10px;
-	font-size: 1em;
-}
-
-/* .widgetDiv {
-  background: #fff;
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
-  height: 30%;
-} */
-/* .widgetContainer {
-	background: #fff;
-	padding: 10px;
-	width: 100vw;
-	height: 200px;
-}
-
-.xyzTable {
-	border-collapse: collapse;
-	border: solid 0.5px;
-}
-
-.xyzTable cell {
-	border: solid 0.5px #333;
-} */
-
-.dgrid {
-	/* height: 100% !important; */
-	background-color: #fff;
-}
-
-.dgrid-row-table {
-	height: auto !important;
+.tableFixHead thead th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	background-color: white;
 }

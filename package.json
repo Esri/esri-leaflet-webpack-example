@@ -6,13 +6,21 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@arcgis/core": "^4.23.7",
+    "@esri/arcgis-rest-feature-service": "^4.0.3",
+    "@esri/arcgis-rest-portal": "^4.0.3",
+    "@esri/arcgis-rest-request": "^4.0.3",
+    "arcgis-js-api": "^4.23.7",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "dotenv": "^16.0.1",
     "express": "~4.16.1",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "multer": "^1.4.4",
-    "parse2-kmz": "^1.0.7"
+    "node-fetch": "^3.2.6",
+    "parse2-kmz": "^1.0.7",
+    "requirejs": "^2.3.6"
   }
 }

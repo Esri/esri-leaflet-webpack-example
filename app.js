@@ -3,9 +3,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+require('dotenv').config()
 
-var indexRouter = require('./routes/index');
-var kmzToGeoJsonRouter = require('./routes/kmztogeojson');
+var indexRouter = require('./routes/index.js');
+var kmzToGeoJsonRouter = require('./routes/kmzUpload.js');
+var newMarkerRouter = require('./routes/newMarker.js');
 
 var app = express();
 
@@ -20,7 +22,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/kmztogeojson', kmzToGeoJsonRouter);
+app.use('/kmz_upload', kmzToGeoJsonRouter);
+app.use('/new', newMarkerRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
